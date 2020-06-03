@@ -9,8 +9,41 @@ describe Table do
     { year: 2023, population: 2 },
   ]}
 
+  let(:other) { described_class.new other_data }
+  let(:other_data) {[
+    { infected: 0 },
+    { infected: 1980000 },
+    { infected: 1999800 },
+    { infected: 1999998 },
+  ]}
+
+
   it "is a subclass of Array" do
     expect(subject).to be_an Array
+  end
+
+  describe '#+' do
+    before { @result = subject + other }
+
+    it "combines two tables into a new one" do
+      expect(@result.to_yaml).to match_approval "plus"
+    end
+
+    it "does not alter the original" do
+      expect(subject.to_yaml).to match_approval "original"
+    end
+  end
+
+  describe '#-' do
+    before { @result = subject - [:population] }
+
+    it "deletes one or more columns" do
+      expect(@result.to_yaml).to match_approval "minus"
+    end
+
+    it "does not alter the original" do
+      expect(subject.to_yaml).to match_approval "original"
+    end
   end
 
   describe '#[]' do
@@ -73,10 +106,41 @@ describe Table do
 
   describe '#select' do
     it "returns a new table with matching rows" do
-      resuslt = subject.select { |row| row[:population] < 30000 }
+      result = subject.select { |row| row[:population] < 20000 }
+      
+      expect(result).to be_a Table
       expect(result.count).to eq 2
+      expect(subject.count).to eq 4
     end
   end
+
+  describe '#select!' do
+    it "keeps only selected rows" do
+      subject.select! { |row| row[:population] < 20000 }
+
+      expect(subject[:population]).to eq [200, 2]
+    end
+  end
+
+  describe '#sort_by' do
+    it "returns a new sorted array" do
+      result = subject.sort_by { |row| row[:population] }
+
+      expect(result).to be_a Table
+      expect(result[0][:population]).to eq 2
+      expect(result[3][:population]).to eq 2000000
+      expect(subject[0][:population]).to eq 2000000
+    end
+  end
+
+  describe '#sort_by!' do
+    it "sorts the table in place" do
+      subject.sort_by! { |row| row[:population] }
+
+      expect(subject[0][:population]).to eq 2
+      expect(subject[3][:population]).to eq 2000000
+    end
+  end  
 
   describe '#row' do
     it "returns a row" do

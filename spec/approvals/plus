@@ -1,0 +1,13 @@
+--- !ruby/array:TableType::Table
+- :year: 2020
+  :population: 2000000
+  :infected: 0
+- :year: 2021
+  :population: 20000
+  :infected: 1980000
+- :year: 2022
+  :population: 200
+  :infected: 1999800
+- :year: 2023
+  :population: 2
+  :infected: 1999998

@@ -1,0 +1,5 @@
+--- !ruby/array:TableType::Table
+- :year: 2020
+- :year: 2021
+- :year: 2022
+- :year: 2023
