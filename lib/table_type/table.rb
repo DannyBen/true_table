@@ -15,14 +15,6 @@ module TableType
       map { |row| row[key] }
     end
 
-    # Returns a row
-    alias row []
-
-    # Returns an array of column headers
-    def headers
-      first.keys
-    end
-
     # Iterates over columns
     def each_col
       headers.each { |header| yield col(header), header }
@@ -31,13 +23,21 @@ module TableType
     # Iterates over rows
     alias each_row each_with_index
 
-    # def select
-    #   self.class.new super
-    # end
+    # Returns an array of column headers
+    def headers
+      first.keys
+    end
 
-    # def sort_by
-    #   self.class.new super
-    # end
+    # Returns a row
+    alias row []
+
+    def select
+      self.class.new super
+    end
+
+    def sort_by
+      self.class.new super
+    end
 
   protected
 

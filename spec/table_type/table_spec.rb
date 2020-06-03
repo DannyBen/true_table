@@ -49,18 +49,6 @@ describe Table do
     end
   end
 
-  describe '#row' do
-    it "returns a row" do
-      expect(subject.row(1)[:year]).to eq 2021
-    end
-  end
-
-  describe '#headers' do
-    it "returns the hash keys from the first row" do
-      expect(subject.headers).to eq [:year, :population]
-    end
-  end
-
   describe '#each_col' do
     it "yields the columns and their names" do
       subject.each_col do |col, header|
@@ -74,6 +62,25 @@ describe Table do
       subject.each_row do |row, i|
         expect(row).to eq subject[i]
       end
+    end
+  end
+
+  describe '#headers' do
+    it "returns the hash keys from the first row" do
+      expect(subject.headers).to eq [:year, :population]
+    end
+  end
+
+  describe '#select' do
+    it "returns a new table with matching rows" do
+      resuslt = subject.select { |row| row[:population] < 30000 }
+      expect(result.count).to eq 2
+    end
+  end
+
+  describe '#row' do
+    it "returns a row" do
+      expect(subject.row(1)[:year]).to eq 2021
     end
   end
 end
