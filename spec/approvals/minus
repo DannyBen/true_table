@@ -1,4 +1,4 @@
---- !ruby/array:TableType::Table
+--- !ruby/array:TrueTable::Table
 - :year: 2020
 - :year: 2021
 - :year: 2022

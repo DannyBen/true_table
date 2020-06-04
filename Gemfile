@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem 'byebug'
 gem 'github_changelog_generator'
+gem 'lp'
 gem 'rdoc'
 gem 'rspec'
 gem 'rspec_approvals'

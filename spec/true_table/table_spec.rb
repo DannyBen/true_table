@@ -82,6 +82,12 @@ describe Table do
     end
   end
 
+  describe '#cols' do
+    it "returns a hash of columns" do
+      expect(subject.cols.to_yaml).to match_approval "cols"
+    end
+  end
+
   describe '#each_col' do
     it "yields the columns and their names" do
       subject.each_col do |col, header|
@@ -101,6 +107,43 @@ describe Table do
   describe '#headers' do
     it "returns the hash keys from the first row" do
       expect(subject.headers).to eq [:year, :population]
+    end
+  end
+
+  describe '#reject' do
+    it "returns a new table without matching rows" do
+      result = subject.reject { |row| row[:population] < 20000 }
+      
+      expect(result).to be_a Table
+      expect(result.count).to eq 2
+      expect(subject.count).to eq 4
+    end
+  end
+
+  describe '#reject!' do
+    it "keeps only non-rejected rows" do
+      subject.reject! { |row| row[:population] < 20000 }
+
+      expect(subject[:population]).to eq [2000000, 20000]
+    end
+  end
+
+  describe '#reverse' do
+    it "returns a new reversed table" do
+      result = subject.reverse
+      
+      expect(result).to be_a Table
+      expect(result.first[:year]).to eq subject.last[:year]
+    end
+  end
+
+  describe '#reverse!' do
+    it "reverses the table in place" do
+      original_year = subject.last[:year]
+
+      subject.reverse!
+
+      expect(subject.first[:year]).to eq original_year
     end
   end
 

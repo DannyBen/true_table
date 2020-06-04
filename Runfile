@@ -1,12 +1,13 @@
 require "runfile-tasks"
 require "byebug"
-require_relative 'lib/table_type'
+require "lp"
+require_relative 'lib/true_table'
 
-title   "TableType Developer Toolbelt"
-summary "Runfile tasks for building the TableType gem"
-version TableType::VERSION
+title   "TrueTable Developer Toolbelt"
+summary "Runfile tasks for building the TrueTable gem"
+version TrueTable::VERSION
 
-RunfileTasks::RubyGems.all 'table_type'
+RunfileTasks::RubyGems.all 'true_table'
 RunfileTasks::Testing.rspec
 RunfileTasks::Docs.rdoc
 
@@ -20,13 +21,10 @@ action :console, :c do
   run "bundle exec bin/console"
 end
 
-help   "Generate TOC to toc.txt"
-action :toc do
-  run! 'gh-md-toc README.md > toc.txt'
-end
-
 help   "Generate changelog"
 action :changelog do
-  run 'github_changelog_generator --cache-file tmp/changlog-cache'  
-  run "git commit -am 'update changelog' && git push"
+  run 'github_changelog_generator'
+  # run "git commit -am 'update changelog' && git push"
 end
+
+require_relative 'debug.rb' if File.exist? 'debug.rb'

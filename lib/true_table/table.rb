@@ -1,4 +1,4 @@
-module TableType
+module TrueTable
   class Table < Array
     def +(other)
       result = self.class.new
@@ -28,6 +28,13 @@ module TableType
       map { |row| row[key] }
     end
 
+    # Returns a hash of columns
+    def cols
+      result = {}
+      each_col { |col, header| result[header] = col }
+      result
+    end
+
     # Iterates over columns
     def each_col
       headers.each { |header| yield col(header), header }
@@ -40,6 +47,27 @@ module TableType
     def headers
       first.keys
     end
+
+    # Returns a new table without rejected rows
+    def reject
+      self.class.new super
+    end
+
+    # Keeps only rows that are not rejected
+    def reject!
+      self.class.new super
+    end
+
+    # Returns a reversed copy
+    def reverse
+      self.class.new super
+    end
+
+    # Reverse in place
+    def reverse!
+      self.class.new super
+    end
+
 
     # Returns a row
     alias row []
@@ -64,97 +92,6 @@ module TableType
       self.class.new super
     end
 
-    # To implement:
-    #collect
-    #collect!
-    #combination
-    #compact
-    #compact!
-    #concat
-    #count
-    #cycle
-    #deconstruct
-    #delete
-    #delete_at
-    #delete_if
-    #difference
-    #dig
-    #drop
-    #drop_while
-    #each
-    #each_index
-    #empty?
-    #eql?
-    #fetch
-    #fill
-    #filter
-    #filter!
-    #find_index
-    #first
-    #flatten
-    #flatten!
-    #hash
-    #include?
-    #index
-    #initialize_copy
-    #insert
-    #inspect
-    #intersection
-    #join
-    #keep_if
-    #last
-    #length
-    #map
-    #map!
-    #max
-    #min
-    #minmax
-    #none?
-    #old_to_s
-    #one?
-    #pack
-    #permutation
-    #pop
-    #prepend
-    #product
-    #push
-    #rassoc
-    #reject
-    #reject!
-    #repeated_combination
-    #repeated_permutation
-    #replace
-    #reverse
-    #reverse!
-    #reverse_each
-    #rindex
-    #rotate
-    #rotate!
-    #sample
-    #shift
-    #shuffle
-    #shuffle!
-    #size
-    #slice
-    #slice!
-    #sort
-    #sort!
-    #sum
-    #take
-    #take_while
-    #to_a
-    #to_ary
-    #to_h
-    #to_s
-    #transpose
-    #union
-    #uniq
-    #uniq!
-    #unshift
-    #values_at
-    #zip
-    #|
-
   protected
 
     def add_col(key, values)
@@ -163,3 +100,87 @@ module TableType
 
   end
 end
+
+
+# To implement:
+
+#collect
+#collect!
+#reverse_each
+#transpose
+#sort
+#sort!
+
+# ::from_csv
+# ::from_tsv
+# ::to_csv
+# ::to_tsv
+
+#combination
+#compact
+#compact!
+#concat
+#cycle
+#deconstruct
+#delete
+#delete_at
+#delete_if
+#difference
+#dig
+#drop
+#drop_while
+#eql?
+#fetch
+#fill
+#filter
+#filter!
+#find_index
+#first
+#flatten
+#flatten!
+#hash
+#include?
+#index
+#initialize_copy
+#insert
+#inspect
+#intersection
+#join
+#keep_if
+#last
+#length
+#max
+#min
+#minmax
+#none?
+#old_to_s
+#one?
+#pack
+#permutation
+#pop
+#prepend
+#product
+#push
+#rassoc
+#repeated_combination
+#repeated_permutation
+#replace
+#rindex
+#rotate
+#rotate!
+#sample
+#shift
+#shuffle
+#shuffle!
+#slice
+#slice!
+#take
+#take_while
+#to_a
+#to_ary
+#to_h
+#union
+#unshift
+#values_at
+#zip
+#|

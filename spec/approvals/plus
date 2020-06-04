@@ -1,4 +1,4 @@
---- !ruby/array:TableType::Table
+--- !ruby/array:TrueTable::Table
 - :year: 2020
   :population: 2000000
   :infected: 0
