@@ -83,6 +83,16 @@ module TrueTable
     end
 
     # Returns a new sorted table
+    def sort
+      self.class.new super
+    end
+
+    # Sorts the table in place
+    def sort!
+      self.class.new super
+    end
+
+    # Returns a new sorted table
     def sort_by
       self.class.new super
     end
@@ -103,13 +113,6 @@ end
 
 
 # To implement:
-
-#collect
-#collect!
-#reverse_each
-#transpose
-#sort
-#sort!
 
 # ::from_csv
 # ::from_tsv

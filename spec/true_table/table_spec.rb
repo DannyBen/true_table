@@ -165,6 +165,26 @@ describe Table do
     end
   end
 
+  describe '#sort' do
+    it "returns a new sorted array" do
+      result = subject.sort { |a, b| a[:population] <=> b[:population] }
+
+      expect(result).to be_a Table
+      expect(result[0][:population]).to eq 2
+      expect(result[3][:population]).to eq 2000000
+      expect(subject[0][:population]).to eq 2000000
+    end
+  end
+
+  describe '#sort!' do
+    it "sorts the table in place" do
+      subject.sort! { |a, b| a[:population] <=> b[:population] }
+
+      expect(subject[0][:population]).to eq 2
+      expect(subject[3][:population]).to eq 2000000
+    end
+  end
+
   describe '#sort_by' do
     it "returns a new sorted array" do
       result = subject.sort_by { |row| row[:population] }
@@ -183,7 +203,7 @@ describe Table do
       expect(subject[0][:population]).to eq 2
       expect(subject[3][:population]).to eq 2000000
     end
-  end  
+  end
 
   describe '#row' do
     it "returns a row" do
