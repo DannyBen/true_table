@@ -37,7 +37,7 @@ describe Table do
   describe '#-' do
     before { @result = subject - [:population] }
 
-    it "deletes one or more columns" do
+    it "returns a new table without subtracted columns" do
       expect(@result.to_yaml).to match_approval "minus"
     end
 
@@ -85,6 +85,22 @@ describe Table do
   describe '#cols' do
     it "returns a hash of columns" do
       expect(subject.cols.to_yaml).to match_approval "cols"
+    end
+  end
+
+  describe '#delete_at' do
+    context "with an integer argument" do
+      it "deletes a row in place and returns the deleted row" do
+        expect(subject.delete_at 1).to eq({ population: 20000, year: 2021 })
+        expect(subject.count).to eq 3
+      end
+    end
+
+    context "with a symbol argument" do
+      it "deletes a column in place and returns the deleted column" do
+        expect(subject.delete_at :year).to eq [2020, 2021, 2022, 2023]
+        expect(subject.headers).to eq [:population]
+      end
     end
   end
 
@@ -147,6 +163,12 @@ describe Table do
     end
   end
 
+  describe '#row' do
+    it "returns a row" do
+      expect(subject.row(1)[:year]).to eq 2021
+    end
+  end
+
   describe '#select' do
     it "returns a new table with matching rows" do
       result = subject.select { |row| row[:population] < 20000 }
@@ -202,12 +224,6 @@ describe Table do
 
       expect(subject[0][:population]).to eq 2
       expect(subject[3][:population]).to eq 2000000
-    end
-  end
-
-  describe '#row' do
-    it "returns a row" do
-      expect(subject.row(1)[:year]).to eq 2021
     end
   end
 end

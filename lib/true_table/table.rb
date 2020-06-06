@@ -1,11 +1,13 @@
 module TrueTable
   class Table < Array
+    # Combines table with other and returns a new one
     def +(other)
       result = self.class.new
       each_row { |row, i| result << row.merge(other[i]) }
       result
     end
 
+    # Returns a new table without specified columns
     def -(cols)
       keep_keys = headers - cols
       result = self.class.new
@@ -35,6 +37,21 @@ module TrueTable
       result
     end
 
+    # Delete a row or a column in place and returns the deleted row/column
+    def delete_at(index)
+      if index.is_a?(Symbol)
+        result = self[index]
+        return nil unless result
+        each_row { |row, i| row.delete index }
+        result
+      else
+        super
+      end
+    end
+
+    alias delete_col delete_at
+    alias delete_row delete_at
+
     # Iterates over columns
     def each_col
       headers.each { |header| yield col(header), header }
@@ -53,21 +70,10 @@ module TrueTable
       self.class.new super
     end
 
-    # Keeps only rows that are not rejected
-    def reject!
-      self.class.new super
-    end
-
     # Returns a reversed copy
     def reverse
       self.class.new super
     end
-
-    # Reverse in place
-    def reverse!
-      self.class.new super
-    end
-
 
     # Returns a row
     alias row []
@@ -77,18 +83,8 @@ module TrueTable
       self.class.new super
     end
 
-    # Keeps only selected rows
-    def select!
-      self.class.new super
-    end
-
     # Returns a new sorted table
     def sort
-      self.class.new super
-    end
-
-    # Sorts the table in place
-    def sort!
       self.class.new super
     end
 
@@ -97,9 +93,9 @@ module TrueTable
       self.class.new super
     end
 
-    # Sorts the table in place
-    def sort_by!
-      self.class.new super
+    # Returns only values, without any headers (array of arrays)
+    def values
+      map { |row| row.values }
     end
 
   protected
@@ -114,6 +110,13 @@ end
 
 # To implement:
 
+#delete
+#delete_if
+#drop
+#drop_while
+#filter
+#filter!
+
 # ::from_csv
 # ::from_tsv
 # ::to_csv
@@ -125,18 +128,11 @@ end
 #concat
 #cycle
 #deconstruct
-#delete
-#delete_at
-#delete_if
 #difference
 #dig
-#drop
-#drop_while
 #eql?
 #fetch
 #fill
-#filter
-#filter!
 #find_index
 #first
 #flatten
