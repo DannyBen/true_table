@@ -101,7 +101,10 @@ module TrueTable
   protected
 
     def add_col(key, values)
-      values.each_with_index { |value, i| self[i][key] = value }
+      values.each_with_index do |value, i|
+        self[i] ||= {}
+        self[i][key] = value
+      end
     end
 
   end
