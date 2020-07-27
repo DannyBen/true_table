@@ -65,6 +65,11 @@ module TrueTable
       first.keys
     end
 
+    # Returns the last row or a new table with the last N rows
+    def last(*args)
+      args.empty? ? super : self.class.new(super)
+    end
+
     # Returns a new table without rejected rows
     def reject
       self.class.new super
@@ -149,7 +154,6 @@ end
 #intersection
 #join
 #keep_if
-#last
 #length
 #max
 #min
