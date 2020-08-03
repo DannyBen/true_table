@@ -1,17 +1,20 @@
-# TableType
+# True Table
 
-[![Gem Version](https://badge.fury.io/rb/table_type.svg)](https://badge.fury.io/rb/table_type)
+[![Gem Version](https://badge.fury.io/rb/true_table.svg)](https://badge.fury.io/rb/true_table)
 [![Build Status](https://github.com/DannyBen/true_table/workflows/Test/badge.svg)](https://github.com/DannyBen/true_table/actions?query=workflow%3ATest)
 
 ---
 
-Simple and intuitive tabular data type, which is an Array of Hashes.
+Simple and intuitive tabular data type, which is a subclass of `Array` where
+each row is a `Hash`.
 
 ---
 
 ## Installation
 
-    $ gem install table_type
+```
+$ gem install true_table
+```
 
 ## Usage
 

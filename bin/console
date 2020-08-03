@@ -2,8 +2,8 @@
 
 require "irb"
 require "irb/completion" 
-require "table_type"
+require "true_table"
 
-include TableType
+include TrueTable
 
 IRB.start

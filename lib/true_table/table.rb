@@ -58,9 +58,13 @@ module TrueTable
         super
       end
     end
-
     alias delete_col delete_at
     alias delete_row delete_at
+
+    # Returns a table with different rows
+    def difference(*others)
+      self.class.new super
+    end
 
     # Extracts nested value. Accepts row, column or column, row
     def dig(*indexes)
@@ -85,6 +89,21 @@ module TrueTable
       first.keys
     end
 
+    # Returns a new table with intersecting rows
+    def intersection(*others)
+      self.class.new super
+    end
+
+    # Returns a string with joined rows and columns
+    def join(row_separator = $,, col_separator = nil, with_headers: false)
+      if col_separator
+        result = map { |row| row.values.join col_separator }.join(row_separator)
+        with_headers ? headers.join(col_separator) + row_separator + result : result
+      else
+        super row_separator
+      end
+    end
+
     # Returns the last row or a new table with the last N rows
     def last(*args)
       args.empty? ? super : self.class.new(super)
@@ -107,6 +126,7 @@ module TrueTable
     def select
       self.class.new super
     end
+    alias filter select
 
     # Returns a new sorted table
     def sort
@@ -116,6 +136,11 @@ module TrueTable
     # Returns a new sorted table
     def sort_by
       self.class.new super
+    end
+
+    # Returns a CSV string
+    def to_csv(row_separator = "\n", col_separator = ",")
+      join(row_separator, col_separator, with_headers: true)
     end
 
     # Returns only values, without any headers (array of arrays)
@@ -134,50 +159,3 @@ module TrueTable
 
   end
 end
-
-
-# To implement:
-
-# ::from_csv
-# ::from_tsv
-# ::to_csv
-# ::to_tsv
-
-#join
-#keep_if
-#length
-#max
-#min
-#minmax
-#none?
-#old_to_s
-#one?
-#pack
-#permutation
-#pop
-#prepend
-#product
-#push
-#rassoc
-#repeated_combination
-#repeated_permutation
-#replace
-#rindex
-#rotate
-#rotate!
-#sample
-#shift
-#shuffle
-#shuffle!
-#slice
-#slice!
-#take
-#take_while
-#to_a
-#to_ary
-#to_h
-#union
-#unshift
-#values_at
-#zip
-#|
