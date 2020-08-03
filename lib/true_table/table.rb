@@ -7,7 +7,7 @@ module TrueTable
       result
     end
 
-    # Returns a new table without specified columns
+    # Returns a new table without the specified columns
     def -(cols)
       keep_keys = headers - cols
       result = self.class.new
