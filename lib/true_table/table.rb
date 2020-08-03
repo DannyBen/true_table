@@ -17,12 +17,12 @@ module TrueTable
 
     # Returns a row or a column
     def [](key)
-      key.is_a?(Symbol) ? col(key) : super
+      key.is_a?(Symbol) || key.is_a?(String) ? col(key.to_sym) : super
     end
 
     # Adds or updates a row or a column
     def []=(key, value)
-      key.is_a?(Symbol) ? add_col(key, value) : super
+      key.is_a?(Symbol) || key.is_a?(String) ? add_col(key.to_sym, value) : super
     end
 
     # Returns a column as Array
@@ -37,9 +37,19 @@ module TrueTable
       result
     end
 
+    # Returns a copy of self without rows that contain nil in any column
+    def compact
+      dup.compact!
+    end
+
+    # Removes rows with nil in any column
+    def compact!
+      delete_if { |row| row.values.include? nil }
+    end
+
     # Delete a row or a column in place and returns the deleted row/column
     def delete_at(index)
-      if index.is_a?(Symbol)
+      if index.is_a?(Symbol) || index.is_a?(String)
         result = self[index]
         return nil unless result
         each_row { |row, i| row.delete index }
@@ -51,6 +61,16 @@ module TrueTable
 
     alias delete_col delete_at
     alias delete_row delete_at
+
+    # Extracts nested value. Accepts row, column or column, row
+    def dig(*indexes)
+      key = indexes.shift
+      if key.is_a?(Symbol) || key.is_a?(String)
+        col(key.to_sym).dig *indexes
+      else
+        row(key).dig *indexes
+      end
+    end
 
     # Iterates over columns
     def each_col
@@ -118,40 +138,11 @@ end
 
 # To implement:
 
-#delete
-#delete_if
-#drop
-#drop_while
-#filter
-#filter!
-
 # ::from_csv
 # ::from_tsv
 # ::to_csv
 # ::to_tsv
 
-#combination
-#compact
-#compact!
-#concat
-#cycle
-#deconstruct
-#difference
-#dig
-#eql?
-#fetch
-#fill
-#find_index
-#first
-#flatten
-#flatten!
-#hash
-#include?
-#index
-#initialize_copy
-#insert
-#inspect
-#intersection
 #join
 #keep_if
 #length

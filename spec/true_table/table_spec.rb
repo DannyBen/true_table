@@ -58,6 +58,12 @@ describe Table do
         expect(subject[:population][3]).to eq 2
       end
     end
+
+    context "with a string key" do
+      it "returns a column" do
+        expect(subject['population'][3]).to eq 2
+      end
+    end
   end
 
   describe '#[]=' do
@@ -71,6 +77,13 @@ describe Table do
     context "with a symbol key" do
       it "adds or updates the column" do
         subject[:infected] = [0, 1980000, 1999800, 1999998]
+        expect(subject[1]).to eq({ population: 20000, year: 2021, infected: 1980000 })
+      end
+    end
+
+    context "with a string key" do
+      it "adds or updates the column" do
+        subject['infected'] = [0, 1980000, 1999800, 1999998]
         expect(subject[1]).to eq({ population: 20000, year: 2021, infected: 1980000 })
       end
     end
@@ -88,6 +101,24 @@ describe Table do
     end
   end
 
+  describe '#compact' do
+    before { data[1][:population] = nil }
+
+    it "returns a copy without rows that contain nil columns" do
+      expect(subject.compact.count).to eq data.compact.count - 1
+    end
+  end
+
+  describe '#compact!' do
+    before { subject[1][:population] = nil }
+
+    it "removes rows with nil columns" do
+      original_size = subject.count
+      subject.compact!
+      expect(subject.count).to eq original_size - 1
+    end
+  end
+
   describe '#delete_at' do
     context "with an integer argument" do
       it "deletes a row in place and returns the deleted row" do
@@ -100,6 +131,20 @@ describe Table do
       it "deletes a column in place and returns the deleted column" do
         expect(subject.delete_at :year).to eq [2020, 2021, 2022, 2023]
         expect(subject.headers).to eq [:population]
+      end
+    end
+  end
+
+  describe '#dig' do
+    context "with row, column" do
+      it "extracts the nested value" do
+        expect(subject.dig 1, :year).to eq 2021
+      end
+    end
+
+    context "with column, row" do
+      it "extracts the nested value" do
+        expect(subject.dig :year, 1).to eq 2021
       end
     end
   end
@@ -226,4 +271,16 @@ describe Table do
       expect(subject[3][:population]).to eq 2000000
     end
   end
+
+  describe '#values' do
+    it "returns an array of arrays" do
+      result = subject.values
+      
+      expect(result).to be_an Array
+      expect(result.first).to eq [2020, 2000000]
+    end
+  end
+
 end
+
+
