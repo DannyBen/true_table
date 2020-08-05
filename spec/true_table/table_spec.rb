@@ -65,12 +65,6 @@ describe Table do
         expect(subject[:population][3]).to eq 2
       end
     end
-
-    context "with a string key" do
-      it "returns a column" do
-        expect(subject['population'][3]).to eq 2
-      end
-    end
   end
 
   describe '#[]=' do
@@ -84,13 +78,6 @@ describe Table do
     context "with a symbol key" do
       it "adds or updates the column" do
         subject[:infected] = [0, 1980000, 1999800, 1999998]
-        expect(subject[1]).to eq({ population: 20000, year: 2021, infected: 1980000 })
-      end
-    end
-
-    context "with a string key" do
-      it "adds or updates the column" do
-        subject['infected'] = [0, 1980000, 1999800, 1999998]
         expect(subject[1]).to eq({ population: 20000, year: 2021, infected: 1980000 })
       end
     end
@@ -248,7 +235,50 @@ describe Table do
   end
 
   describe '#fetch' do
-    pending
+    context "with a numeric argument" do
+      it "returns a row" do
+        expect(subject.fetch 1).to eq({ year: 2021, population: 20000 })
+      end
+
+      context "when it is out of bounds" do
+        it "raises IndexError" do
+          expect { subject.fetch 99 }.to raise_error(IndexError)
+        end
+      end
+
+      context "when it is out of bounds but a default is given" do
+        it "returns the default value" do
+          expect(subject.fetch 99, "ok").to eq "ok"
+        end
+      end
+    end
+
+    context "with a symbol argument" do
+      it "returns a column" do
+        expect(subject.fetch :year).to eq([2020, 2021, 2022, 2023])
+      end
+
+      context "when it is out of bounds" do
+        it "raises IndexError" do
+          expect { subject.fetch :no_such_column }.to raise_error(IndexError)
+        end
+      end
+
+      context "when it is out of bounds but a default is given" do
+        it "returns the default value" do
+          expect(subject.fetch :no_such_column, "ok").to eq "ok"
+        end
+      end
+
+      context "when it is out of bounds but a block is given" do
+        it "returns the default value" do
+          result = subject.fetch :no_such_column do |index|
+            "received :#{index}"
+          end
+          expect(result).to eq "received :no_such_column"
+        end
+      end
+    end
   end
 
   describe '#fill' do
@@ -347,51 +377,65 @@ describe Table do
   end
 
   describe '#keep_if' do
-    pending
+    it "keeps only rows for which the block returns true" do
+      subject.keep_if { |row| row[:year] < 2022 }
+      expect(subject[:year]).to eq [2020, 2021]
+    end    
   end
 
   describe '#length' do
-    pending
+    it "returns the number of rows" do
+      expect(subject.length).to eq 4      
+    end
   end
 
   describe '#max' do
-    pending
+    it "returns the row with the maximum block value" do
+      result = subject.max do |a, b|
+        a[:population] <=> b[:population]
+      end
+      expect(result[:year]).to eq 2020
+    end
   end
 
   describe '#min' do
-    pending
+    it "returns the row with the minimum block value" do
+      result = subject.min do |a, b|
+        a[:population] <=> b[:population]
+      end
+      expect(result[:year]).to eq 2023
+    end
   end
 
   describe '#minmax' do
-    pending
-  end
-
-  describe '#none?' do
-    pending
-  end
-
-  describe '#old_to_s' do
-    pending
-  end
-
-  describe '#one?' do
-    pending
-  end
-
-  describe '#pack' do
-    pending
+    it "returns a two element array with min and max rows" do
+      result = subject.minmax do |a, b|
+        a[:population] <=> b[:population]
+      end
+      expect(result[0][:year]).to eq 2023
+      expect(result[1][:year]).to eq 2020
+    end
   end
 
   describe '#permutation' do
-    pending
+    it "yields the row permutations" do
+      expect(subject.permutation.count).to eq 24
+    end
   end
 
   describe '#pop' do
-    pending
+    it "removes the last element and returns it" do
+      expect(subject.pop[:year]).to eq 2023
+      expect(subject.count).to eq 3
+    end
   end
 
   describe '#prepend' do
-    pending
+    it "inserts a row at the beginning" do
+      subject.prepend({ year: 2019, population: 3000000 })
+      expect(subject.count).to eq 5
+      expect(subject[0][:year]).to eq 2019
+    end
   end
 
   describe '#product' do
@@ -582,10 +626,6 @@ describe Table do
   end
 
   describe '#union' do
-    pending
-  end
-
-  describe '#unshift' do
     pending
   end
 

@@ -17,12 +17,12 @@ module TrueTable
 
     # Returns a row or a column
     def [](key)
-      key.is_a?(Symbol) || key.is_a?(String) ? col(key.to_sym) : super
+      key.is_a?(Symbol) ? col(key) : super
     end
 
     # Adds or updates a row or a column
     def []=(key, value)
-      key.is_a?(Symbol) || key.is_a?(String) ? add_col(key.to_sym, value) : super
+      key.is_a?(Symbol) ? add_col(key.to_sym, value) : super
     end
 
     # Returns a column as Array
@@ -69,7 +69,7 @@ module TrueTable
     # Extracts nested value. Accepts row, column or column, row
     def dig(*indexes)
       key = indexes.shift
-      if key.is_a?(Symbol) || key.is_a?(String)
+      if key.is_a?(Symbol)
         col(key.to_sym).dig *indexes
       else
         row(key).dig *indexes
@@ -83,6 +83,22 @@ module TrueTable
 
     # Iterates over rows
     alias each_row each_with_index
+
+    def fetch(key, *default)
+      if key.is_a?(Symbol)
+        if headers.include? key
+          col(key.to_sym)
+        elsif default.any?
+          default.first
+        elsif block_given?
+          yield key
+        else
+          raise IndexError, "row :#{key} does not exist"
+        end
+      else
+        super
+      end
+    end
 
     # Returns an array of column headers
     def headers
