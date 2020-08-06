@@ -135,6 +135,11 @@ module TrueTable
       self.class.new super
     end
 
+    # Returns a new table with the element at `count` as the first element
+    def rotate(count = 1)
+      self.class.new super
+    end
+
     # Returns a row
     alias row []
 
@@ -143,6 +148,11 @@ module TrueTable
       self.class.new super
     end
     alias filter select
+
+    # Returns a new shuffled tables
+    def shuffle(*args)
+      self.class.new super
+    end
 
     # Returns a new sorted table
     def sort
@@ -157,6 +167,12 @@ module TrueTable
     # Returns a CSV string
     def to_csv(row_separator = "\n", col_separator = ",")
       join(row_separator, col_separator, with_headers: true)
+    end
+
+    # Returns a hash representation of the table using the values of the
+    # first column as hash keys
+    def to_h
+      map { |row| [row.values.first, row] }.to_h
     end
 
     # Returns only values, without any headers (array of arrays)

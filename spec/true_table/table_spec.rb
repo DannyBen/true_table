@@ -30,10 +30,9 @@ describe Table do
   end
 
   describe '#+' do
-    before { @result = subject + other }
-
     it "combines two tables into a new one" do
-      expect(@result.to_yaml).to match_approval "plus"
+      result = subject + other
+      expect(result.to_yaml).to match_approval "plus"
     end
 
     it "does not alter the original" do
@@ -42,10 +41,10 @@ describe Table do
   end
 
   describe '#-' do
-    before { @result = subject - [:population] }
 
     it "returns a new table without subtracted columns" do
-      expect(@result.to_yaml).to match_approval "minus"
+      result = subject - [:population]
+      expect(result.to_yaml).to match_approval "minus"
     end
 
     it "does not alter the original" do
@@ -235,7 +234,7 @@ describe Table do
   end
 
   describe '#fetch' do
-    context "with a numeric argument" do
+    context "with an integer argument" do
       it "returns a row" do
         expect(subject.fetch 1).to eq({ year: 2021, population: 20000 })
       end
@@ -438,16 +437,11 @@ describe Table do
     end
   end
 
-  describe '#product' do
-    pending
-  end
-
   describe '#push' do
-    pending
-  end
-
-  describe '#rassoc' do
-    pending
+    it "appends a row to the table" do
+      subject.push year: 2024, population: 0
+      expect(subject.count).to eq 5
+    end
   end
 
   describe '#reject' do
@@ -468,16 +462,12 @@ describe Table do
     end
   end
 
-  describe '#repeated_combination' do
-    pending
-  end
-
-  describe '#repeated_permutation' do
-    pending
-  end
-
   describe '#replace' do
-    pending
+    it "replaces the table with a new table" do
+      subject.replace other
+      expect(subject[:infected][1]).to eq 1980000
+      expect(subject).to be_a Table
+    end
   end
 
   describe '#reverse' do
@@ -500,15 +490,25 @@ describe Table do
   end
 
   describe '#rindex' do
-    pending
+    it "returns the index of the last matching row" do
+      result = subject.rindex { |row| row[:year] <= 2021 }
+      expect(result).to eq 1
+    end
   end
 
   describe '#rotate' do
-    pending
+    it "offsets the rows to the top" do
+      expect(subject.rotate(2)[0][:year]).to eq 2022
+      expect(subject.rotate(2)).to be_a Table
+    end
   end
 
   describe '#rotate!' do
-    pending
+    it "rotates the table in place" do
+      subject.rotate! 2
+      expect(subject[0][:year]).to eq 2022
+      expect(subject).to be_a Table
+    end
   end
 
   describe '#row' do
@@ -518,7 +518,15 @@ describe Table do
   end
 
   describe '#sample' do
-    pending
+    it "returns one a random row" do
+      expect(subject.sample).to be_a Hash
+    end
+
+    context "with an argument" do
+      it "returns an array with multiple random rows" do
+        expect(subject.sample(2).count).to eq 2
+      end
+    end
   end
 
   describe '#select' do
@@ -540,23 +548,52 @@ describe Table do
   end
 
   describe '#shift' do
-    pending
+    it "removes the first N rows" do
+      expect(subject.shift[:year]).to eq 2020
+      expect(subject.count).to eq 3
+      expect(subject).to be_a Table
+    end
   end
 
   describe '#shuffle' do
-    pending
+    it "returns a new table with shuffled rows" do
+      expect(subject.shuffle).to be_a Table
+    end
   end
 
   describe '#shuffle!' do
-    pending
+    it "shuffles the table in place" do
+      subject.shuffle!
+      expect(subject).to be_a Table
+    end
   end
 
   describe '#slice' do
-    pending
+    context "with one argument" do
+      it "returns the row at index" do
+        expect(subject.slice(1)[:year]).to eq 2021
+      end
+    end
+
+    context "with two arguments" do
+      it "returns a new table slice" do
+        result = subject.slice(1, 2)
+
+        expect(result).to be_a Table
+        expect(result.count).to eq 2
+        expect(result.first[:year]).to eq 2021
+      end
+    end
   end
 
   describe '#slice!' do
-    pending
+    it "deletes and returns one or more" do
+      result = subject.slice!(0, 3)
+
+      expect(result).to be_a Table
+      expect(result.count).to eq 3
+      expect(subject.count).to eq 1
+    end
   end
 
   describe '#sort' do
@@ -600,19 +637,39 @@ describe Table do
   end
 
   describe '#take' do
-    pending
+    it "returns a new table with the first N rows" do
+      result = subject.take 2
+      
+      expect(result).to be_a Table
+      expect(result.count).to eq 2
+      expect(subject.count).to eq 4
+    end
   end
 
   describe '#take_while' do
-    pending
+    it "takes rows until the block returns false" do
+      result = subject.take_while { |row| row[:year] < 2022 }
+      expect(result.count).to eq 2
+      expect(result[1][:year]).to eq 2021
+    end
+
+    it "returns a Table" do
+      result = subject.take_while { |row| row[:year] < 2022 }
+      expect(result).to be_a Table
+    end
   end
 
   describe '#to_a' do
-    pending
+    it "returns an Array" do
+      expect(subject.to_a).to be_an Array
+      expect(subject.to_a).not_to be_a Table
+    end
   end
 
   describe '#to_ary' do
-    pending
+    it "returns self" do
+      expect(subject.to_ary).to be_a Table
+    end
   end
 
   describe '#to_csv' do
@@ -622,7 +679,12 @@ describe Table do
   end
 
   describe '#to_h' do
-    pending
+    it "returns a hash using the values of the first column as keys" do
+      result = subject.to_h
+      
+      expect(result).to be_a Hash
+      expect(result[2022][:population]).to eq 200
+    end
   end
 
   describe '#union' do
