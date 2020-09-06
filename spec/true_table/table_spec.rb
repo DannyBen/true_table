@@ -82,6 +82,15 @@ describe Table do
     end
   end
 
+  describe '#clone' do
+    it "returns a deep copy without altering the original" do
+      copy = subject.clone
+      copy[:cured] = ["10%", "5%", "3%", "1%"]
+      expect(subject.headers).to eq [:year, :population]
+      expect(copy.headers).to eq [:year, :population, :cured]
+    end
+  end
+
   describe '#col' do
     it "returns a column" do
       expect(subject.col(:year)[1]).to eq 2021

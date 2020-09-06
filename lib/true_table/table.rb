@@ -25,6 +25,11 @@ module TrueTable
       key.is_a?(Symbol) ? add_col(key.to_sym, value) : super
     end
 
+    # Returns a deep copy of self
+    def clone
+      self.class.new map(&:clone)
+    end
+
     # Returns a column as Array
     def col(key)
       map { |row| row[key] }
