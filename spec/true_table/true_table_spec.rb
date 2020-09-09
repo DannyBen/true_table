@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Table do
+describe TrueTable do
   subject { described_class.new data }
   let(:data) {[
     { year: 2020, population: 2000000 },
@@ -204,7 +204,7 @@ describe Table do
     end
 
     it "returns a Table object" do
-      expect(subject.drop(2)).to be_a Table
+      expect(subject.drop(2)).to be_a TrueTable
     end
   end
 
@@ -216,7 +216,7 @@ describe Table do
 
     it "returns a Table" do
       result = subject.drop_while { |row| row[:year] < 2022 }
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
     end
   end
 
@@ -300,7 +300,7 @@ describe Table do
     it "returns a new table with matching rows" do
       result = subject.filter { |row| row[:population] < 20000 }
       
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
       expect(result.count).to eq 2
       expect(subject.count).to eq 4
     end
@@ -457,7 +457,7 @@ describe Table do
     it "returns a new table without matching rows" do
       result = subject.reject { |row| row[:population] < 20000 }
       
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
       expect(result.count).to eq 2
       expect(subject.count).to eq 4
     end
@@ -475,7 +475,7 @@ describe Table do
     it "replaces the table with a new table" do
       subject.replace other
       expect(subject[:infected][1]).to eq 1980000
-      expect(subject).to be_a Table
+      expect(subject).to be_a TrueTable
     end
   end
 
@@ -483,7 +483,7 @@ describe Table do
     it "returns a new reversed table" do
       result = subject.reverse
       
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
       expect(result.first[:year]).to eq subject.last[:year]
     end
   end
@@ -508,7 +508,7 @@ describe Table do
   describe '#rotate' do
     it "offsets the rows to the top" do
       expect(subject.rotate(2)[0][:year]).to eq 2022
-      expect(subject.rotate(2)).to be_a Table
+      expect(subject.rotate(2)).to be_a TrueTable
     end
   end
 
@@ -516,7 +516,7 @@ describe Table do
     it "rotates the table in place" do
       subject.rotate! 2
       expect(subject[0][:year]).to eq 2022
-      expect(subject).to be_a Table
+      expect(subject).to be_a TrueTable
     end
   end
 
@@ -542,7 +542,7 @@ describe Table do
     it "returns a new table with matching rows" do
       result = subject.select { |row| row[:population] < 20000 }
       
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
       expect(result.count).to eq 2
       expect(subject.count).to eq 4
     end
@@ -560,20 +560,20 @@ describe Table do
     it "removes the first N rows" do
       expect(subject.shift[:year]).to eq 2020
       expect(subject.count).to eq 3
-      expect(subject).to be_a Table
+      expect(subject).to be_a TrueTable
     end
   end
 
   describe '#shuffle' do
     it "returns a new table with shuffled rows" do
-      expect(subject.shuffle).to be_a Table
+      expect(subject.shuffle).to be_a TrueTable
     end
   end
 
   describe '#shuffle!' do
     it "shuffles the table in place" do
       subject.shuffle!
-      expect(subject).to be_a Table
+      expect(subject).to be_a TrueTable
     end
   end
 
@@ -588,7 +588,7 @@ describe Table do
       it "returns a new table slice" do
         result = subject.slice(1, 2)
 
-        expect(result).to be_a Table
+        expect(result).to be_a TrueTable
         expect(result.count).to eq 2
         expect(result.first[:year]).to eq 2021
       end
@@ -599,7 +599,7 @@ describe Table do
     it "deletes and returns one or more" do
       result = subject.slice!(0, 3)
 
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
       expect(result.count).to eq 3
       expect(subject.count).to eq 1
     end
@@ -609,7 +609,7 @@ describe Table do
     it "returns a new sorted array" do
       result = subject.sort { |a, b| a[:population] <=> b[:population] }
 
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
       expect(result[0][:population]).to eq 2
       expect(result[3][:population]).to eq 2000000
       expect(subject[0][:population]).to eq 2000000
@@ -629,7 +629,7 @@ describe Table do
     it "returns a new sorted array" do
       result = subject.sort_by { |row| row[:population] }
 
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
       expect(result[0][:population]).to eq 2
       expect(result[3][:population]).to eq 2000000
       expect(subject[0][:population]).to eq 2000000
@@ -649,7 +649,7 @@ describe Table do
     it "returns a new table with the first N rows" do
       result = subject.take 2
       
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
       expect(result.count).to eq 2
       expect(subject.count).to eq 4
     end
@@ -664,20 +664,20 @@ describe Table do
 
     it "returns a Table" do
       result = subject.take_while { |row| row[:year] < 2022 }
-      expect(result).to be_a Table
+      expect(result).to be_a TrueTable
     end
   end
 
   describe '#to_a' do
     it "returns an Array" do
       expect(subject.to_a).to be_an Array
-      expect(subject.to_a).not_to be_a Table
+      expect(subject.to_a).not_to be_a TrueTable
     end
   end
 
   describe '#to_ary' do
     it "returns self" do
-      expect(subject.to_ary).to be_a Table
+      expect(subject.to_ary).to be_a TrueTable
     end
   end
 

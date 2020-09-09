@@ -1,4 +1,4 @@
---- !ruby/array:TrueTable::Table
+--- !ruby/array:TrueTable
 - :year: 2020
   :population: 2000000
 - :year: 2021

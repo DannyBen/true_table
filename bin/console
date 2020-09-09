@@ -4,6 +4,4 @@ require "irb"
 require "irb/completion" 
 require "true_table"
 
-include TrueTable
-
 IRB.start
