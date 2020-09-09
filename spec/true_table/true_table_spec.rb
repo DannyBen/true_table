@@ -25,7 +25,27 @@ describe TrueTable do
     subject { described_class }
 
     describe '::from_csv' do
-      pending
+      let(:csv) { File.read 'spec/fixtures/sample.csv' }
+
+      it "returns a TrueTable" do
+        expect(subject.from_csv csv).to be_a TrueTable
+      end
+
+      it "loads the CSV into the table" do
+        expect(subject.from_csv(csv)[1]).to eq({ population: 20000, year: 2021 })
+      end
+    end
+
+    describe '::load_csv' do
+      let(:path) { 'spec/fixtures/sample.csv' }
+
+      it "returns a TrueTable" do
+        expect(subject.load_csv path).to be_a TrueTable
+      end
+
+      it "loads the CSV into the table" do
+        expect(subject.load_csv(path)[1]).to eq({ population: 20000, year: 2021 })
+      end
     end
   end
 
@@ -535,6 +555,13 @@ describe TrueTable do
       it "returns an array with multiple random rows" do
         expect(subject.sample(2).count).to eq 2
       end
+    end
+  end
+
+  describe '#save_csv' do
+    it "saves the table as a CSV file" do
+      expect(File).to receive(:write).with('some-path.csv', subject.to_csv)
+      subject.save_csv 'some-path.csv'
     end
   end
 

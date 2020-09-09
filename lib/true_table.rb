@@ -1,4 +1,21 @@
+require 'csv'
+
 class TrueTable < Array
+  class << self
+    # Loads a CSV string into a new TrueTable object and returns it
+    def from_csv(csv_string, options = {})
+      default_options = { headers: true, converters: :numeric, header_converters: :symbol }
+      csv = CSV.new csv_string, **default_options.merge(options)
+      new.tap do |table|
+        csv.each { |row| table << row.to_h }
+      end
+    end
+
+    def load_csv(path, options = {})
+      from_csv File.read(path), options
+    end
+  end
+
   # Combines table with other and returns a new one
   def +(other)
     result = self.class.new
@@ -146,6 +163,11 @@ class TrueTable < Array
 
   # Returns a row
   alias row []
+
+  # Saves the table as a CSV file
+  def save_csv(path)
+    File.write path, to_csv
+  end
 
   # Returns a new table with selected rows
   def select
