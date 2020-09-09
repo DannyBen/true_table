@@ -2,7 +2,16 @@ require 'csv'
 
 class TrueTable < Array
   class << self
-    # Loads a CSV string into a new TrueTable object and returns it
+    # Loads a CSV string
+    #
+    # @example
+    #   csv = "id,name\n1,Harry\n2,Lloyd"
+    #   table = TrueTable.load_csv csv, converters: [:date, :numeric]
+    #
+    # @param [String] csv_string CSV string.
+    # @param [Hash] options options to forward to the CSV class.
+    #
+    # @return [TrueTable] the new table object
     def from_csv(csv_string, options = {})
       default_options = { headers: true, converters: :numeric, header_converters: :symbol }
       csv = CSV.new csv_string, **default_options.merge(options)
@@ -11,6 +20,15 @@ class TrueTable < Array
       end
     end
 
+    # Loads a CSV file
+    #
+    # @example
+    #   table = TrueTable.from_csv "sample.csv", converters: [:date, :numeric]
+    #
+    # @param [String] path the path to the CSV file.
+    # @param [Hash] options options to forward to the CSV class.
+    #
+    # @return [TrueTable] the new table object
     def load_csv(path, options = {})
       from_csv File.read(path), options
     end
