@@ -4,7 +4,7 @@ require 'date'
 
 Gem::Specification.new do |s|
   s.name        = 'true_table'
-  s.version     = "0.1.3"
+  s.version     = "0.2.0"
   s.date        = Date.today.to_s
   s.summary     = "Simple and intuitive tabular data type"
   s.description = "Simple and intuitive tabular data type"
