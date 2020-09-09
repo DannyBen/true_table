@@ -16,6 +16,9 @@ each row is a `Hash`.
 $ gem install true_table
 ```
 
-## Usage
+## Documentation
 
-TODO
+[Documentation on RubyDoc][docs]
+
+
+[docs]: https://rubydoc.info/gems/true_table
