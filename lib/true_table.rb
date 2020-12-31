@@ -115,6 +115,16 @@ class TrueTable < Array
     end
   end
 
+  # Returns a new table without the first N rows
+  def drop(*args)
+    self.class.new super
+  end
+
+  # Returns a new table with rows until the block returns false
+  def drop_while(*args)
+    self.class.new super
+  end
+
   # Iterates over columns
   def each_col
     headers.each { |header| yield col(header), header }
@@ -198,6 +208,24 @@ class TrueTable < Array
     self.class.new super
   end
 
+  # Returns a new table slice
+  def slice(*args)
+    if args.count == 1 and args.first.is_a? Integer
+      super
+    else
+      self.class.new super
+    end
+  end
+
+  # Deletes and returns one more rows
+  def slice!(*args)
+    if args.count == 1 and args.first.is_a? Integer
+      super
+    else
+      self.class.new super
+    end
+  end
+
   # Returns a new sorted table
   def sort
     self.class.new super
@@ -205,6 +233,16 @@ class TrueTable < Array
 
   # Returns a new sorted table
   def sort_by
+    self.class.new super
+  end
+
+  # Returns a new table with the first N rows
+  def take(*args)
+    self.class.new super
+  end
+
+  # Returns a new table with rows until the block returns false
+  def take_while(*args)
     self.class.new super
   end
 
