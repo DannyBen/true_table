@@ -623,7 +623,7 @@ describe TrueTable do
   end
 
   describe '#slice!' do
-    it "deletes and returns one or more" do
+    it "deletes and returns one or more rows" do
       result = subject.slice!(0, 3)
 
       expect(result).to be_a TrueTable
