@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require "irb"
-require "irb/completion" 
-require "true_table"
+require 'irb'
+require 'irb/completion'
+require 'true_table'
 
 IRB.start
