@@ -198,6 +198,11 @@ class TrueTable < Array
     File.write path, to_csv
   end
 
+  # Saves the table as a TSV file
+  def save_tsv(path)
+    File.write path, to_tsv
+  end
+
   # Returns a new table with selected rows
   def select
     self.class.new super
@@ -249,6 +254,11 @@ class TrueTable < Array
 
   # Returns a CSV string
   def to_csv(row_separator = "\n", col_separator = ',')
+    join(row_separator, col_separator, with_headers: true)
+  end
+
+  # Returns a TSV string
+  def to_tsv(row_separator = "\n", col_separator = "\t")
     join(row_separator, col_separator, with_headers: true)
   end
 
