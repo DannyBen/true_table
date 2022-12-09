@@ -42,10 +42,10 @@ class TrueTable < Array
   end
 
   # Returns a new table without the specified columns
-  def -(cols)
-    keep_keys = headers - cols
+  def -(other)
+    keep_keys = headers - other
     result = self.class.new
-    each_row { |row, i| result << row.slice(*keep_keys) }
+    each_row { |row, _i| result << row.slice(*keep_keys) }
     result
   end
 
@@ -83,7 +83,7 @@ class TrueTable < Array
 
   # Removes rows with nil in any column
   def compact!
-    delete_if { |row| row.values.include? nil }
+    delete_if { |row| row.has_value?(nil) }
   end
 
   # Delete a row or a column in place and returns the deleted row/column
@@ -91,7 +91,8 @@ class TrueTable < Array
     if index.is_a?(Symbol) || index.is_a?(String)
       result = self[index]
       return nil unless result
-      each_row { |row, i| row.delete index }
+
+      each_row { |row, _i| row.delete index }
       result
     else
       super
@@ -109,9 +110,9 @@ class TrueTable < Array
   def dig(*indexes)
     key = indexes.shift
     if key.is_a?(Symbol)
-      col(key.to_sym).dig *indexes
+      col(key.to_sym).dig(*indexes)
     else
-      row(key).dig *indexes
+      row(key).dig(*indexes)
     end
   end
 
@@ -210,7 +211,7 @@ class TrueTable < Array
 
   # Returns a new table slice
   def slice(*args)
-    if args.count == 1 and args.first.is_a? Integer
+    if (args.count == 1) && args.first.is_a?(Integer)
       super
     else
       self.class.new super
@@ -219,7 +220,7 @@ class TrueTable < Array
 
   # Deletes and returns one more rows
   def slice!(*args)
-    if args.count == 1 and args.first.is_a? Integer
+    if (args.count == 1) && args.first.is_a?(Integer)
       super
     else
       self.class.new super
@@ -247,19 +248,19 @@ class TrueTable < Array
   end
 
   # Returns a CSV string
-  def to_csv(row_separator = "\n", col_separator = ",")
+  def to_csv(row_separator = "\n", col_separator = ',')
     join(row_separator, col_separator, with_headers: true)
   end
 
   # Returns a hash representation of the table using the values of the
   # first column as hash keys
   def to_h
-    map { |row| [row.values.first, row] }.to_h
+    super { |row| [row.values.first, row] }
   end
 
   # Returns only values, without any headers (array of arrays)
   def values
-    map { |row| row.values }
+    map(&:values)
   end
 
 protected
@@ -270,5 +271,4 @@ protected
       self[i][key] = value
     end
   end
-
 end
