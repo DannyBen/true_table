@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe TrueTable do
   subject { described_class.new data }
 
@@ -569,6 +567,13 @@ describe TrueTable do
     end
   end
 
+  describe '#save_tsv' do
+    it 'saves the table as a TSV file' do
+      expect(File).to receive(:write).with('some-path.tsv', subject.to_tsv)
+      subject.save_tsv 'some-path.tsv'
+    end
+  end
+
   describe '#select' do
     it 'returns a new table with matching rows' do
       result = subject.select { |row| row[:population] < 20_000 }
@@ -715,6 +720,12 @@ describe TrueTable do
   describe '#to_csv' do
     it 'returns a CSV string' do
       expect(subject.to_csv).to match_approval 'csv'
+    end
+  end
+
+  describe '#to_tsv' do
+    it 'returns a TSV string' do
+      expect(subject.to_tsv).to match_approval 'tsv'
     end
   end
 
