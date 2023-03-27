@@ -2,12 +2,10 @@ source 'https://rubygems.org'
 
 gem 'byebug'
 gem 'lp'
-gem 'rdoc'
 gem 'rspec'
 gem 'rspec_approvals'
 gem 'runfile'
-gem 'runfile-tasks'
+gem 'runfile-tasks', '>= 1.0.2'
 gem 'simplecov'
-gem 'yard'
 
 gemspec
