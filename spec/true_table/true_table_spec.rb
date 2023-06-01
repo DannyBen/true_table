@@ -736,10 +736,19 @@ describe TrueTable do
       expect(result).to be_a Hash
       expect(result[2022][:population]).to eq 200
     end
+
+    context 'when a block is given' do
+      it 'uses the provided block to generate the hash' do
+        result = subject.to_h { |row| [row[:year], row[:population]] }
+
+        expect(result).to be_a Hash
+        expect(result[2022]).to eq 200
+      end
+    end
   end
 
   describe '#union' do
-    pending
+    pending 'To be completed'
   end
 
   describe '#values' do
@@ -752,14 +761,14 @@ describe TrueTable do
   end
 
   describe '#values_at' do
-    pending
+    pending 'To be completed'
   end
 
   describe '#zip' do
-    pending
+    pending 'To be completed'
   end
 
   describe '#|' do
-    pending
+    pending 'To be completed'
   end
 end
