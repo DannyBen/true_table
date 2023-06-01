@@ -263,9 +263,14 @@ class TrueTable < Array
   end
 
   # Returns a hash representation of the table using the values of the
-  # first column as hash keys
+  # first column as hash keys. If a block is given, the results of the block
+  # on each element of the array will be used as key => value pair.
   def to_h
-    super { |row| [row.values.first, row] }
+    if block_given?
+      super
+    else
+      super { |row| [row.values.first, row] }
+    end
   end
 
   # Returns only values, without any headers (array of arrays)
