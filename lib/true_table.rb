@@ -51,12 +51,20 @@ class TrueTable < Array
 
   # Returns a row or a column
   def [](key)
-    key.is_a?(Symbol) ? col(key) : super
+    case key
+    when Symbol then col(key)
+    when Hash   then row(key)
+    else super
+    end
   end
 
   # Adds or updates a row or a column
   def []=(key, value)
-    key.is_a?(Symbol) ? add_col(key.to_sym, value) : super
+    case key
+    when Symbol then add_col(key.to_sym, value)
+    when Hash   then add_row(key, value)
+    else super
+    end
   end
 
   # Returns a deep copy of self
@@ -134,25 +142,40 @@ class TrueTable < Array
   # Iterates over rows
   alias each_row each_with_index
 
+  # Returns a row or a column
   def fetch(key, *default)
-    if key.is_a?(Symbol)
-      if headers.include? key
-        col(key.to_sym)
-      elsif default.any?
-        default.first
-      elsif block_given?
-        yield key
+    case key
+    when Symbol
+      if headers.include?(key) then col(key.to_sym)
+      elsif default.any? then default.first
+      elsif block_given? then yield key
       else
-        raise IndexError, "row :#{key} does not exist"
+        raise IndexError, "col :#{key} does not exist"
       end
+
+    when Hash
+      result = row(key)
+      if result then result
+      elsif default.any? then default.first
+      elsif block_given? then yield key
+      else
+        raise IndexError, "row #{key} does not exist"
+      end
+
     else
       super
+
     end
   end
 
   # Returns an array of column headers
   def headers
     first.keys
+  end
+
+  # Returns a short inspection string
+  def inspect
+    "<#{self.class}:#{object_id} size=#{size} headers=#{headers}>"
   end
 
   # Returns a new table with intersecting rows
@@ -191,7 +214,12 @@ class TrueTable < Array
   end
 
   # Returns a row
-  alias row []
+  def row(key)
+    key.is_a?(Hash) ? find { |x| x[key.first.first] == key.first.last } : self[key]
+  end
+
+  # Returns all rows
+  alias rows to_a
 
   # Saves the table as a CSV file
   def save_csv(path)
@@ -285,5 +313,9 @@ protected
       self[i] ||= {}
       self[i][key] = value
     end
+  end
+
+  def add_row(key, values)
+    row(key).merge! values
   end
 end

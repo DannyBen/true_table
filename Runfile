@@ -1,8 +1,9 @@
-require "byebug"
-require "lp"
+require 'byebug'
+require 'lp'
+require 'true_table'
 
-title   "TrueTable Developer Toolbelt"
-summary "Runfile tasks for building the TrueTable gem"
+title   'TrueTable Developer Toolbelt'
+summary 'Runfile tasks for building the TrueTable gem'
 
 import_gem 'runfile-tasks/gem'
 import_gem 'runfile-tasks/yard'
