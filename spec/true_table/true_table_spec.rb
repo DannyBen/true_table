@@ -86,6 +86,12 @@ describe TrueTable do
         expect(subject[:population][3]).to eq 2
       end
     end
+
+    context 'with a hash key' do
+      it 'returns a row' do
+        expect(subject[year: 2023][:population]).to eq 2
+      end
+    end
   end
 
   describe '#[]=' do
@@ -100,6 +106,13 @@ describe TrueTable do
       it 'adds or updates the column' do
         subject[:infected] = [0, 1_980_000, 1_999_800, 1_999_998]
         expect(subject[1]).to eq({ population: 20_000, year: 2021, infected: 1_980_000 })
+      end
+    end
+
+    context 'with a hash key' do
+      it 'adds the row' do
+        subject[year: 2023] = { population: 23 }
+        expect(subject[:population]).to eq [2_000_000, 20_000, 200, 23]
       end
     end
   end
@@ -524,6 +537,20 @@ describe TrueTable do
     it 'returns the index of the last matching row' do
       result = subject.rindex { |row| row[:year] <= 2021 }
       expect(result).to eq 1
+    end
+  end
+
+  describe '#row' do
+    context 'with an integer key' do
+      it 'returns a row' do
+        expect(subject[2][:population]).to eq 200
+      end
+    end
+
+    context 'with a hash key' do
+      it 'returns a row' do
+        expect(subject[year: 2023][:population]).to eq 2
+      end
     end
   end
 
