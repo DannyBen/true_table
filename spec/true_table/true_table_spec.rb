@@ -452,9 +452,7 @@ describe TrueTable do
 
   describe '#minmax' do
     it 'returns a two element array with min and max rows' do
-      result = subject.minmax do |a, b|
-        a[:population] <=> b[:population]
-      end
+      result = subject.minmax_by { |a| a[:population] }
       expect(result[0][:year]).to eq 2023
       expect(result[1][:year]).to eq 2020
     end
@@ -681,7 +679,7 @@ describe TrueTable do
 
   describe '#sort!' do
     it 'sorts the table in place' do
-      subject.sort! { |a, b| a[:population] <=> b[:population] }
+      subject.sort_by! { |a| a[:population] }
 
       expect(subject[0][:population]).to eq 2
       expect(subject[3][:population]).to eq 2_000_000

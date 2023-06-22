@@ -149,7 +149,8 @@ class TrueTable < Array
       if headers.include?(key) then col(key.to_sym)
       elsif default.any? then default.first
       elsif block_given? then yield key
-      else raise IndexError, "col :#{key} does not exist"
+      else
+        raise IndexError, "col :#{key} does not exist"
       end
 
     when Hash
@@ -157,12 +158,13 @@ class TrueTable < Array
       if result then result
       elsif default.any? then default.first
       elsif block_given? then yield key
-      else raise IndexError, "row #{key} does not exist"
+      else
+        raise IndexError, "row #{key} does not exist"
       end
 
     else
       super
-    
+
     end
   end
 
